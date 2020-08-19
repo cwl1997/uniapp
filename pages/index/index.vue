@@ -1,30 +1,13 @@
 <template>
 	<view class="content">
-		<selectdown @refresh="getdata">
-			<pullup @closepull="getpulldata"> 
-				<!-- <button type="primary" @click="test">测试</button> -->
-				<view>{{res}}</view>
-				<view class="box"></view>
-				<view class="box"></view>
-				<view class="box"></view>
-				<view class="box"></view>
-				<view class="box"></view>
-				<view class="box"></view>
-				<view class="box"></view>
-				<view class="box"></view>
-				<view class="box"></view>
-				<view class="box"></view>
-				<view class="box"></view>
-				<view class="box"></view>
-				<view class="box"></view>
-				<view class="box"></view>
-				<view class="box"></view>
-				<view class="box"></view>
-				<view class="box"></view>
-				<view class="box"></view>
-				<view class="box"></view>
+		<!-- <selectdown @refresh="getdata">
+			<pullup @closepull="getpulldata" :list="list"> 
+				<view v-for="(item,index) in list" :key="index">
+					<view class="box"></view>
+				</view>				
 			</pullup>			 
-		</selectdown>		
+		</selectdown>	 -->	
+		<wl-tabbar :list="list" @sendcurrent="getindex"></wl-tabbar>
 	</view>
 </template>
 
@@ -32,13 +15,24 @@
 	export default {
 		data() {
 			return {
-			res:''
+			res:'',
+			list:[
+				{name:'首页1',imgUrl:'/static/user.png',imgActiveUrl:'/static/useractive.png'},
+				{name:'页面2',imgUrl:'/static/user.png',imgActiveUrl:'/static/useractive.png'},
+				{name:'页面3',imgUrl:'/static/user.png',imgActiveUrl:'/static/useractive.png'},
+				{name:'用户',imgUrl:'/static/user.png',imgActiveUrl:'/static/useractive.png'},
+				]
 			}
 		},
 		onLoad() {
 
 		},
+		onShow() {
+		},
 		methods: {
+			getindex(v){
+				console.log('选择了',this.list[v].name)
+			},
 			test(){
 				let date = new Date 
 				let obj = {name:'1'}
@@ -60,11 +54,13 @@
 					}
 				});
 			},
-			getdata(close){
-				// close()
+			getdata(toclose){
+				this.list.push({})
+				toclose()
 			},
 			getpulldata(test){
-				// test()
+				this.list.push({})
+				test()
 			}
 		}
 	}

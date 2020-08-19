@@ -19,6 +19,9 @@
 //create()干掉
 export default ({
   name: 'pull-refresh',
+  props:{
+	  list:{type:Array,default:()=>{}}
+  },
   data () {
     return {
       startY: '',    //保存touch时的Y坐标
@@ -45,6 +48,8 @@ export default ({
 	  // console.log(this.startY)
     },
     touchMove (e) {    //这里是整个下拉刷新的核心
+	//监听查看数据是否到底满足上拉加载条件
+	 if(this.list.length<5) return
       let scrollTop = document.documentElement.scrollTop || document.body.scrollTop
         //首先判断我们有没有滚动条，如果有，我们下拉刷新就不能启用。
       // if (scrollTop > 0) return
@@ -56,7 +61,8 @@ export default ({
 	  if(scrollHeight - scrollTop- windowHeight > 30) return 
 	  //获取滑动高度
 	  this.showtype = true 
-	  var move =   this.startY  - e.changedTouches[0].clientY 
+	  var move =   this.startY  - e.changedTouches[0].clientY
+	 
 	  //反向进行计算，如果结果为正代表往上滑动
 	  if(move >0){
 		  //阻止默认事件，在微信浏览器中尤为有用，至于为什么，你去试就知道了。
@@ -83,7 +89,7 @@ export default ({
     touchEnd (e) {		
       // 只要手指拿开，我都需要加上结束时的动画，这里为300ms
       this.duration = 300
-      if (this.moveDistance <-50) {
+      if (this.moveDistance <-40) {
 		// this.showtype = false 
         //这里逻辑跟touchMove一样，但是需要真的加载数据了，那moveState变为2 所以加载动画在这出现
         this.moveState = 2
@@ -97,6 +103,7 @@ export default ({
       } else {
         //否则 给我老老实实恢复原样
         this.moveDistance = 0
+		this.showtype = false 
       }
     }
   },

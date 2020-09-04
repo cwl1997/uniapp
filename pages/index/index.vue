@@ -12,8 +12,11 @@
 		<view v-for="(item,index) in imglist" :key="index">
 			<image :src="item" mode=""></image>
 		</view>
-		
-		{{result}}
+		<view>
+			<view v-for="(item,index) in jszList" :key="index">
+				<view>{{item.item}}:{{item.itemstring}}</view>
+			</view>
+		</view>
 		<!-- <wl-tabbar :list="list" @sendcurrent="getindex"></wl-tabbar> -->
 		<!-- <view >SGNB</view> -->
 	</view>
@@ -21,6 +24,7 @@
 
 <script>
 	import {getkey }from '@/common/authorization.js'
+	import {pathToBase64, base64ToPath} from '@/js_sdk/gsq-image-tools/image-tools/index.js'
 	export default {
 		data() {
 			return {
@@ -33,7 +37,8 @@
 				],
 			text:'',
 			result:'12321',
-			imglist:[]
+			imglist:[],
+			jszList:[]
 			}
 		},
 		onLoad() {
@@ -92,11 +97,26 @@
 						const tempFilePaths = res.tempFilePaths;
 						let obj = {}
 						vm.imglist = tempFilePaths
-						console.log(vm.chooseImage)
+						console.log(vm.imglist)
 						obj.appid="1300568222"
 						obj.url_list=res.tempFiles[0]
-						// console.log(obj)
-						uni.request({
+						uni.uploadFile({
+							url:'http://49.234.56.112/blade-resource/oss/endpoint/put-file',
+							header:{
+								"Blade-Auth":'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnRfaWQiOiIwMDAwMDAiLCJ1c2VyX25hbWUiOiJhZG1pbiIsInJlYWxfbmFtZSI6IueuoeeQhuWRmCIsImF2YXRhciI6IiIsImF1dGhvcml0aWVzIjpbImFkbWluaXN0cmF0b3IiXSwiY2xpZW50X2lkIjoic2FiZXIiLCJyb2xlX25hbWUiOiJhZG1pbmlzdHJhdG9yIiwibGljZW5zZSI6InBvd2VyZWQgYnkgYmxhZGV4IiwidXNlcl9pZCI6IjExMjM1OTg4MjE3Mzg2NzUyMDEiLCJyb2xlX2lkIjoiMTEyMzU5ODgxNjczODY3NTIwMSIsInNjb3BlIjpbImFsbCJdLCJuaWNrX25hbWUiOiLnrqHnkIblkZgiLCJleHAiOjE2MDE0MjMzMDYsImRlcHRfaWQiOiIxMjE5NTU0NTc4NDEzNzYwNTE0LDEyMTk0NTU0NjM2NjMxODU5MjEsMTIxOTQ5OTg0MTAwNTkyNDM1MyIsImp0aSI6ImRjYzI0YjY0LTU3Y2EtNDViOS1hYTNlLTg4ODZhOTNiMTI5NyIsImFjY291bnQiOiJhZG1pbiJ9.-kIr8mBW-XoWkve2OGgFU3eThKrZL0gzydNpJ_pTyBo'
+							},
+							filePath:tempFilePaths[0],
+							name:'file',
+							fromData:{
+								
+							},
+							
+							success:(data)=>{
+								console.log(data)
+							}
+						})
+						console.log(obj)
+						/* uni.request({
 							url: `https://recognition.image.myqcloud.com/ocr/idcard`, 
 							method:"POST",
 							header:{
@@ -116,45 +136,55 @@
 								alert(res)
 								// alert(res)
 							}
-						})
+						}) */
 				    }
 				});
 			},
 			carmerjsz(){
 				let key = getkey()
+				let vm = this
 				// console.log(key)
 				uni.chooseImage({
 				    count: 1, //默认9
 				    sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
-				    sourceType: ['camera'], //从相册选择
+				    sourceType: ['camera','album'], //从相册选择
 				    success: function (res) {
 						let size = res.tempFiles[0].size
-						console.log('res',res)
+						// console.log('res',res)
 						const tempFilePaths = res.tempFilePaths;
 						let obj = {}
 						obj.appid="1300568222"
-						obj.url_list=res.tempFiles[0]
-						// console.log(obj)
-						uni.request({
-							url: `https://recognition.image.myqcloud.com/ocr/drivinglicence`, 
-							method:"POST",
-							header:{
-								"host":'https://ocr.tencentcloudapi.com/?Action=DriverLicenseOCR',
-								"content-length":size,
-								"content-type":"application/json ",
-								"authorization":key
-							},
-							data:{
-								appid:"1300568222",
-								type:0,
-								url_list:['https://up.enterdesk.com/edpic_360_360/3a/d1/66/3ad1668da63c67a9dc421238938dfb8c.jpg']
-							},
-							success: (res) => {
-								console.log(res)
-								this.result = res 
-								// alert(res)
-							}
+						obj.url_list=res.tempFiles[0]						
+						pathToBase64(res.tempFilePaths[0])
+						.then(base64=>{
+							// console.log(base64)
+							uni.request({
+								url: `https://recognition.image.myqcloud.com/ocr/drivinglicence`, 
+								method:"POST",
+								header:{
+									"host":'https://ocr.tencentcloudapi.com/?Action=DriverLicenseOCR',
+									"content-length":size,
+									"content-type":"application/json ",
+									"authorization":key
+								},
+								data:{
+									appid:"1300568222",
+									type:0,
+									// url_list:['https://up.enterdesk.com/edpic_360_360/3a/d1/66/3ad1668da63c67a9dc421238938dfb8c.jpg']
+									image:base64			
+								},
+								success: (res) => {
+									console.log(res.data.data.items)
+									vm.jszList = res.data.data.items
+									vm.$forceUpdate()
+									// res.data.data.ite
+									// this.result = res 
+									// alert(res)
+								}
+							})
 						})
+						// console.log(obj)
+						
 				    }
 				});
 			}

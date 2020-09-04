@@ -1,7 +1,7 @@
 <script>
 	export default {
 		onLaunch: function() {
-			// console.log('App Launch')
+			uni.getStorageSync('token')
 		},
 		onShow: function() {
 			// console.log('App Show')

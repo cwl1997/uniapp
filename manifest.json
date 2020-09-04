@@ -50,7 +50,9 @@
             /* ios打包配置 */
             "ios" : {},
             /* SDK配置 */
-            "sdkConfigs" : {}
+            "sdkConfigs" : {
+                "ad" : {}
+            }
         }
     },
     /* 快应用特有相关 */
@@ -72,7 +74,22 @@
     "mp-toutiao" : {
         "usingComponents" : true
     },
-    "uniStatistics": {  
-        "enable": false
+    "uniStatistics" : {
+        "enable" : false
+    },
+    "h5" : {
+        "devServer" : {
+            "disableHostCheck" : false,
+            "proxy" : {
+                "/api" : {
+                    // "target" : "https://api.jisuapi.com",
+					"target" : "http://apis.elongai.com/vi",
+                    "changeOrigin" : true,
+                    "secure" : false,
+					"pathRewrite": {"^/api":""}
+                }
+            },
+            "https" : false
+        }
     }
 }

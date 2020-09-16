@@ -83,7 +83,7 @@
             "proxy" : {
                 "/api" : {
                     // "target" : "https://api.jisuapi.com",
-					"target" : "http://apis.elongai.com/vi",
+					"target" : "https://dm-51.data.aliyun.com/rest/160601/ocr/ocr_idcard.json",
                     "changeOrigin" : true,
                     "secure" : false,
 					"pathRewrite": {"^/api":""}

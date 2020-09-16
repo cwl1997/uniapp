@@ -1,9 +1,9 @@
  export function getkey(){
 	 var crypto = require('crypto');
 	 
-	 var secretId  = '',
-	     secretKey = '',
-	     appid     = '',
+	 var secretId  = 'AKIDb6CD6urr2zjKjvrYGjDTXUCLEsHAfJQF',
+	     secretKey = 'PaaKK5aZJo8CbonX0DYprdAa9h04tUxy',
+	     appid     = '1300568222',
 	     pexpired  = 86400,
 	     userid   = 0;
 	 
